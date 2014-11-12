@@ -26,6 +26,7 @@
 		<style>
 		table, th {
 		    background-color: #aaa;
+			padding: 3px 10px;
 		}
 		tbody {
 		    background-color: #ddd;
@@ -49,18 +50,18 @@
 				
 					<!-- Logo -->
 						<div id="logo">
-							<h1>Vote!</h1>
-							<span>by Twilio Sales</span>
+							<h1>Quiz!</h1>
+							<span>for Twilio Sales</span>
 						</div>
 					
 					<!-- Nav -->
 						<nav id="nav">
 							<ul>
-								<li class="current"><a href="results">Refresh Results</a></li>
-								<li><a href="javascript:if (confirm('Are you sure you want to reset all responses?'))  document.forms[0].submit();">Reset Responses</a></li>
+								<li><a href="results">Refresh Results</a></li>
+								<li><a href="javascript:if (confirm('Are you sure you want to reset all responses?  Data will be deleted.'))  document.forms[0].submit();">Reset Responses</a></li>
 							</ul>
 						</nav>
-					
+						<div>Text responses to (253) 666-6678</div>
 				</header>
 			</div>
 		
@@ -71,47 +72,36 @@
 					<h2>No SMS received yet</h2>
 					<% end %>
 					<% @questions.each do |q|%>
-					<div class="row">
-						<div class="4u">
-						
-							<!-- Sidebar -->
-								<div id="sidebar">
-									<section class="widget thumbnails">
-										<h3>Question <%= q.question %></h3>
-										<%= column_chart Vote.where("question=?", q.question).group(:answer).count %>
-
-									</section>
-								</div>
-						
+						<div id="<%= q.question %>">
+							<%= render :partial => 'response', locals: {q: q}, :remote => true %>
 						</div>
-						<div class="8u important(collapse)">
-
-							<!-- Content -->
-								<div id="content">
-									<section class="last">
-										<h3><%= q.question %> Responses</h3>
-										<p>
-											<table>
-										        <tr>
-										            <th>Answer</th>
-										            <th>From</th>
-													<th>Date</th>
-										        </tr>
-												
-											<% Vote.where("question=?", q.question).order(:id).each do |vote| %>
-											<tr><td><%= vote.answer %></td><td><%= vote.from %></td><td><%= localize(vote.created_at, :format => :long) %></td></tr>
-											<% end %>
-										</table>
-											
-										</p>
-									</section>
-								</div>
-
-						</div>
-					</div>
 					<% end %>
 				</div>
 			</div>
-<form id="resetForm" action="/reset" method="POST"></form>
+			<form id="resetForm" action="/reset" method="POST"></form>
+
+<script>
+  $(document).ready(function(){
+    setInterval(updateCharts,5000);
+ });
+
+  function updateCharts(){
+	  
+	  $.ajax({
+	      url:"/question_count",  
+	      success:function(data) {
+			  if (data > <%= @questions.length %>){
+				  document.location.reload();
+			  }
+	      }
+	    });
+		
+	  <% @questions.each do |q|%>
+		  $("#<%=q.question%>").load("<%=fetch_items_path(question: q.question)%>"); 
+	  <% end %>
+  }
+  
+</script>
+
 	</body>
 </html>

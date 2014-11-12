@@ -1,0 +1,1 @@
+  $("#<%= @q.question %>").html("<%= escape_javascript(render partial: 'response', locals: { q: @q } ) %>"); 

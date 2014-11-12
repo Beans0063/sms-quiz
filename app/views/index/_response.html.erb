@@ -1,0 +1,42 @@
+<div class="row">
+	<div class="4u">
+	
+		<!-- Sidebar -->
+			<div id="sidebar">
+				<section class="widget thumbnails">
+					<h3>Question <%= q.question %></h3>
+					<%= column_chart Vote.where("question=?", q.question).group(:answer).count,  id: "chart-#{q.question}" %>
+
+				</section>
+			</div>
+	
+	</div>
+	<div class="8u important(collapse)">
+
+		<!-- Content -->
+			<div id="content">
+				<section class="last">
+					<h3><%= q.question %> Responses</h3>
+					<p>
+						<table>
+					        <tr>
+					            <th>Answer</th>
+					            <th>From</th>
+								<th>Date</th>
+					        </tr>
+							
+						<% Vote.where("question=?", q.question).order(:id).each do |vote| %>
+						<tr>
+							<td><%= vote.answer %></td>
+							<td><%= vote.from %></td>
+							<td><%= localize(vote.created_at, :format => :long) %></td>
+						</tr>
+						<% end %>
+					</table>
+						
+					</p>
+				</section>
+			</div>
+
+	</div>
+</div>
