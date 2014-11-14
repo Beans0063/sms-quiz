@@ -5,8 +5,8 @@ class Vote < ActiveRecord::Base
     v.to = params[:To]
     v.sid = params[:MessageSid]
     v.body = params[:Body]
-    v.question = params[:Body].split(" ").first.upcase
-    v.answer = params[:Body].partition(" ").last.upcase
+    v.question = params[:Body].split(" ").first.upcase.strip
+    v.answer = params[:Body].partition(" ").last.upcase.strip
     v.save
   end
 end
