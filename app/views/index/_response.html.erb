@@ -5,8 +5,7 @@
 			<div id="sidebar">
 				<section class="widget thumbnails">
 					<h3>Question <%= q.question %></h3>
-					<%= column_chart Vote.where("question=?", q.question).group(:answer).count,  id: "chart-#{q.question}" %>
-
+					<%= column_chart Vote.where("question=?", q.question).group(:answer).count.sort.to_h,  id: "chart-#{q.question}" %>
 				</section>
 			</div>
 	
@@ -25,7 +24,7 @@
 								<th>Date</th>
 					        </tr>
 							
-						<% Vote.where("question=?", q.question).order(:id).each do |vote| %>
+						<% Vote.where("question=?", q.question).order(:answer).each do |vote| %>
 						<tr>
 							<td><%= vote.answer %></td>
 							<td><%= vote.from %></td>
